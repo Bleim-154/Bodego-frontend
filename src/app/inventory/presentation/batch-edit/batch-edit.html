@@ -1,0 +1,25 @@
+<section class="container">
+  <h1>Editar lote</h1>
+  @if (loading()) {
+    <p>Cargando lote...</p>
+  }
+  @if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  }
+  @if (batch(); as current) {
+    <p>Producto: {{ current.productId }} · Cantidad disponible: {{ current.availableQuantity }}</p>
+    <p>La cantidad se modifica mediante movimientos de inventario.</p>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <label for="batch-edit-code">Código del lote</label>
+      <input id="batch-edit-code" formControlName="code" maxlength="100" />
+      <label for="batch-edit-expiration">Vencimiento (opcional)</label>
+      <input id="batch-edit-expiration" type="date" formControlName="expirationDate" />
+      <div class="actions">
+        <a routerLink="/batches">Cancelar</a>
+        <button type="submit" [disabled]="form.invalid || loading() || saving()">
+          {{ saving() ? 'Guardando...' : 'Guardar' }}
+        </button>
+      </div>
+    </form>
+  }
+</section>

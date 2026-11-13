@@ -1,0 +1,36 @@
+<section class="container">
+  <h1>Aplicar ajuste de stock</h1>
+
+  @if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <label for="stock-adjustment-create-physicalCountId">Conteo físico</label>
+    <select id="stock-adjustment-create-physicalCountId" formControlName="physicalCountId">
+      <option value="">Seleccione un conteo</option>
+
+      @for (count of counts(); track count.id) {
+        <option [value]="count.id">
+          Lote {{ count.batchId }} | Sistema: {{ count.systemQuantity }} | Contado:
+          {{ count.countedQuantity }} | Diferencia: {{ count.difference }}
+        </option>
+      }
+    </select>
+
+    <label for="stock-adjustment-create-reason">Motivo del ajuste</label>
+    <textarea
+      id="stock-adjustment-create-reason"
+      formControlName="reason"
+      maxlength="500"
+    ></textarea>
+
+    <div class="actions">
+      <a routerLink="/stock-control/adjustments">Cancelar</a>
+
+      <button type="submit" [disabled]="!session.isAdmin() || form.invalid || saving()">
+        {{ saving() ? 'Aplicando...' : 'Aplicar ajuste' }}
+      </button>
+    </div>
+  </form>
+</section>

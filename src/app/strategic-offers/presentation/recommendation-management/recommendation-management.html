@@ -1,0 +1,71 @@
+<section class="container">
+  <h1>Recomendaciones estratégicas</h1>
+
+  <nav>
+    <a routerLink="/products">Productos</a>
+    <a routerLink="/strategic-offers/offers"> Gestión de ofertas </a>
+
+    <button type="button" [disabled]="saving()" (click)="generate()">
+      Generar recomendaciones
+    </button>
+
+    <label>
+      <input
+        type="checkbox"
+        [checked]="showDismissed()"
+        (change)="showDismissed.set(!showDismissed())"
+      />
+      Mostrar descartadas
+    </label>
+  </nav>
+
+  @if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  }
+
+  @if (message()) {
+    <p class="success" role="status">{{ message() }}</p>
+  }
+
+  @if (loading()) {
+    <p>Cargando recomendaciones...</p>
+  } @else if (visibleRecommendations().length === 0) {
+    <p>No hay recomendaciones para mostrar.</p>
+  } @else {
+    <div class="table-container" role="region" aria-label="Tabla de registros" tabindex="0">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Fecha</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">Recomendación</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Acción</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (recommendation of visibleRecommendations(); track recommendation.id) {
+            <tr>
+              <td>{{ recommendation.createdAt }}</td>
+              <td>{{ recommendation.type }}</td>
+              <td>{{ recommendation.message }}</td>
+              <td>
+                <span class="status-badge" [class.warning]="!recommendation.dismissed">{{
+                  recommendation.dismissed ? 'Descartada' : 'Pendiente'
+                }}</span>
+              </td>
+              <td>
+                @if (!recommendation.dismissed) {
+                  <button type="button" [disabled]="saving()" (click)="dismiss(recommendation.id)">
+                    Descartar
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

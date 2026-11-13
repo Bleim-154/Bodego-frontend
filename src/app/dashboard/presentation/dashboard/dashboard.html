@@ -1,0 +1,118 @@
+<section class="dashboard">
+  <header class="dashboard-header">
+    <div>
+      <p class="eyebrow">Panel de control</p>
+      <h1>Negocio {{ session.currentBusiness()?.id }}</h1>
+      <p>Resumen general del inventario y las operaciones.</p>
+    </div>
+
+    <button type="button" class="refresh-button" [disabled]="loading()" (click)="load()">
+      Actualizar
+    </button>
+  </header>
+
+  @if (loading()) {
+    <div class="state-message">Cargando indicadores...</div>
+  } @else if (error()) {
+    <div class="state-message error">
+      {{ error() }}
+      <button type="button" (click)="load()">Reintentar</button>
+    </div>
+  } @else if (summary(); as data) {
+    <div class="stats-grid">
+      <a routerLink="/products" class="stat-card">
+        <span>Productos activos</span>
+        <strong>{{ data.activeProducts }}</strong>
+        <small>Productos disponibles en el catálogo</small>
+      </a>
+
+      <a routerLink="/batches" class="stat-card">
+        <span>Lotes registrados</span>
+        <strong>{{ data.totalBatches }}</strong>
+        <small>{{ data.totalUnits }} unidades en inventario</small>
+      </a>
+
+      <a routerLink="/products" class="stat-card warning">
+        <span>Productos con stock bajo</span>
+        <strong>{{ data.lowStockProducts }}</strong>
+        <small>Por debajo del stock mínimo</small>
+      </a>
+
+      <a routerLink="/batches" class="stat-card">
+        <span>Lotes próximos a vencer</span>
+        <strong>{{ data.expiringBatches }}</strong>
+        <small>Hoy y los próximos 30 días; fecha local {{ data.evaluatedOn }}</small>
+      </a>
+
+      @if (session.isAdmin() && data.pendingAlerts !== null) {
+        <a routerLink="/monitoring/alerts" class="stat-card danger">
+          <span>Alertas pendientes</span>
+          <strong>{{ data.pendingAlerts }}</strong>
+          <small>Alertas que requieren atención</small>
+        </a>
+      }
+    </div>
+
+    <div class="dashboard-content">
+      <article class="panel">
+        <div class="panel-header">
+          <h2>Movimientos recientes</h2>
+          <a routerLink="/inventory/movements">Ver todos</a>
+        </div>
+
+        @if (data.recentMovements.length === 0) {
+          <p class="empty-message">Todavía no hay movimientos registrados.</p>
+        } @else {
+          <div class="table-wrapper" role="region" aria-label="Tabla de registros" tabindex="0">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Tipo</th>
+                  <th scope="col">Lote</th>
+                  <th scope="col">Cantidad</th>
+                  <th scope="col">Fecha</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (movement of data.recentMovements; track movement.id) {
+                  <tr>
+                    <td>
+                      <span
+                        class="movement-type"
+                        [class.in]="movement.type === 'IN'"
+                        [class.out]="movement.type === 'OUT'"
+                      >
+                        {{ movement.type === 'IN' ? 'Ingreso' : 'Salida' }}
+                      </span>
+                    </td>
+                    <td>{{ movement.batchId }}</td>
+                    <td>{{ movement.quantity }}</td>
+                    <td>{{ movement.createdAt.slice(0, 10) }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </article>
+
+      <article class="panel">
+        <h2>Accesos rápidos</h2>
+
+        <div class="quick-links">
+          <a routerLink="/products">Consultar productos</a>
+          <a routerLink="/batches">Consultar lotes</a>
+          <a routerLink="/inventory/movements">Consultar movimientos</a>
+          <a routerLink="/stock-control/counts">Consultar conteos físicos</a>
+
+          @if (session.isAdmin()) {
+            <a routerLink="/monitoring/alerts">Consultar alertas</a>
+            <a routerLink="/strategic-offers/recommendations"> Ver recomendaciones </a>
+          }
+        </div>
+      </article>
+    </div>
+  } @else {
+    <div class="state-message">No hay datos vigentes para esta sesión. Actualice el panel.</div>
+  }
+</section>

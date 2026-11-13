@@ -1,0 +1,130 @@
+<section class="container">
+  <h1>Gestión de ofertas</h1>
+
+  <nav>
+    <a routerLink="/strategic-offers/recommendations"> Recomendaciones </a>
+    <a routerLink="/products">Productos</a>
+    <a routerLink="/iam/businesses"> Gestión de negocios </a>
+  </nav>
+
+  @if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  }
+
+  @if (message()) {
+    <p class="success" role="status">{{ message() }}</p>
+  }
+
+  <h2>{{ editingId ? 'Editar oferta' : 'Nueva oferta' }}</h2>
+
+  <form (ngSubmit)="save()">
+    <label for="offer-management-productId">Producto</label>
+    <select
+      id="offer-management-productId"
+      name="productId"
+      [(ngModel)]="productId"
+      [disabled]="editingId !== null"
+      required
+    >
+      <option value="">Seleccione un producto</option>
+
+      @for (product of products(); track product.id) {
+        @if (product.active || product.id === productId) {
+          <option [value]="product.id">{{ product.name }}</option>
+        }
+      }
+    </select>
+
+    <label for="offer-management-title">Título</label>
+    <input id="offer-management-title" name="title" [(ngModel)]="title" maxlength="255" required />
+
+    <label for="offer-management-discount">Descuento (%)</label>
+    <input
+      id="offer-management-discount"
+      type="number"
+      name="discount"
+      [(ngModel)]="discountPercentage"
+      min="0"
+      max="100"
+      step="any"
+      required
+    />
+
+    <label for="offer-management-startDate">Fecha de inicio</label>
+    <input
+      id="offer-management-startDate"
+      type="date"
+      name="startDate"
+      [(ngModel)]="startDate"
+      required
+    />
+
+    <label for="offer-management-endDate">Fecha de fin</label>
+    <input
+      id="offer-management-endDate"
+      type="date"
+      name="endDate"
+      [(ngModel)]="endDate"
+      required
+    />
+
+    <div class="actions">
+      <button type="submit" [disabled]="saving()">
+        {{ saving() ? 'Guardando...' : 'Guardar oferta' }}
+      </button>
+
+      @if (editingId) {
+        <button type="button" (click)="reset()">Cancelar edición</button>
+      }
+    </div>
+  </form>
+
+  <h2>Ofertas registradas</h2>
+  <p>El estado Activa no implica que la oferta esté vigente fuera de sus fechas de inicio y fin.</p>
+
+  @if (loading()) {
+    <p>Cargando...</p>
+  } @else if (offers().length === 0) {
+    <p>No hay ofertas registradas.</p>
+  } @else {
+    <div class="table-container" role="region" aria-label="Tabla de registros" tabindex="0">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Producto</th>
+            <th scope="col">Oferta</th>
+            <th scope="col">Descuento</th>
+            <th scope="col">Inicio</th>
+            <th scope="col">Fin</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (offer of offers(); track offer.id) {
+            <tr>
+              <td>{{ productName(offer.productId) }}</td>
+              <td>{{ offer.title }}</td>
+              <td>{{ offer.discountPercentage }}%</td>
+              <td>{{ offer.startDate }}</td>
+              <td>{{ offer.endDate }}</td>
+              <td>
+                <span class="status-badge" [class.positive]="offer.active">{{
+                  offer.active ? 'Activa' : 'Inactiva'
+                }}</span>
+              </td>
+              <td>
+                <button type="button" (click)="edit(offer)">Editar</button>
+
+                <button type="button" [disabled]="saving()" (click)="toggleStatus(offer)">
+                  {{ offer.active ? 'Desactivar' : 'Activar' }}
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

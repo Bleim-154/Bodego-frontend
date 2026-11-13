@@ -1,0 +1,57 @@
+<section class="category-container">
+  <h1>Gestión de Categorías</h1>
+
+  <p>Administre las categorías de productos de BodeGo.</p>
+
+  <div class="category-actions">
+    <a routerLink="/products"> Volver a productos </a>
+
+    @if (session.isAdmin()) {
+      <a routerLink="/categories/new"> Registrar nueva categoría </a>
+    }
+  </div>
+
+  @if (loading()) {
+    <p>Cargando categorías...</p>
+  }
+
+  @if (error()) {
+    <p class="error-message" role="alert">{{ error() }}</p>
+  }
+
+  @if (!loading() && !error()) {
+    @if (categories().length > 0) {
+      <div class="table-container" role="region" aria-label="Listado" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Categoría</th>
+              <th scope="col">Descripción</th>
+              <th scope="col">Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (category of categories(); track category.id) {
+              <tr>
+                <td>{{ category.id }}</td>
+                <td>{{ category.name }}</td>
+                <td>{{ category.description || 'Sin descripción' }}</td>
+                <td>
+                  @if (session.isAdmin()) {
+                    <a [routerLink]="['/categories', 'edit', category.id]">Editar</a>
+                  } @else {
+                    Solo lectura
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <p>No hay categorías registradas.</p>
+    }
+  }
+</section>

@@ -1,0 +1,54 @@
+<section class="container">
+  <h1>Registro de auditoría</h1>
+
+  <nav>
+    <a routerLink="/monitoring/alerts">Alertas</a>
+    <a routerLink="/batches">Lotes</a>
+  </nav>
+
+  <input
+    type="search"
+    aria-label="Buscar registros de auditor?a"
+    placeholder="Buscar registros..."
+    [value]="filter()"
+    (input)="filter.set($any($event.target).value)"
+  />
+
+  @if (loading()) {
+    <p>Cargando auditoría...</p>
+  } @else if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  } @else if (filteredLogs().length === 0) {
+    <p>No hay registros para mostrar.</p>
+  } @else {
+    <div class="table-container" role="region" aria-label="Tabla de registros" tabindex="0">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Fecha</th>
+            <th scope="col">Negocio</th>
+            <th scope="col">Acción</th>
+            <th scope="col">Entidad</th>
+            <th scope="col">ID</th>
+            <th scope="col">Descripción</th>
+            <th scope="col">Usuario</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (log of filteredLogs(); track log.id) {
+            <tr>
+              <td>{{ log.performedAt }}</td>
+              <td>{{ log.businessId }}</td>
+              <td>{{ log.action }}</td>
+              <td>{{ log.entityType }}</td>
+              <td>{{ log.entityId }}</td>
+              <td>{{ log.description }}</td>
+              <td>{{ log.userId || 'No identificado' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

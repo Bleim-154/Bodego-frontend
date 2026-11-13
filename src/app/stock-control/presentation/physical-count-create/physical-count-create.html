@@ -1,0 +1,38 @@
+<section class="container">
+  <h1>Registrar conteo físico</h1>
+
+  @if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <label for="physical-count-create-batchId">Lote</label>
+    <select id="physical-count-create-batchId" formControlName="batchId">
+      <option value="">Seleccione un lote</option>
+
+      @for (batch of batches(); track batch.id) {
+        <option [value]="batch.id">{{ batch.code }} - Stock: {{ batch.availableQuantity }}</option>
+      }
+    </select>
+
+    <label for="physical-count-create-countedQuantity">Cantidad contada</label>
+    <input
+      id="physical-count-create-countedQuantity"
+      type="number"
+      min="0"
+      step="1"
+      formControlName="countedQuantity"
+    />
+
+    <label for="physical-count-create-observation">Observación</label>
+    <textarea id="physical-count-create-observation" formControlName="observation"></textarea>
+
+    <div class="actions">
+      <a routerLink="/stock-control/counts">Cancelar</a>
+
+      <button type="submit" [disabled]="form.invalid || saving()">
+        {{ saving() ? 'Guardando...' : 'Registrar conteo' }}
+      </button>
+    </div>
+  </form>
+</section>

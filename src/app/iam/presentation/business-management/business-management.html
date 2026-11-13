@@ -1,0 +1,15 @@
+<section class="container">
+  <h1>Gestión de negocios no disponible</h1>
+  <p>Negocio autenticado: {{ session.currentBusiness()?.id }}</p>
+  <p>
+    La API actual no permite consultar el nombre, dirección o teléfono del negocio, listar negocios,
+    crearlos, editarlos o cambiar su estado.
+  </p>
+  <p>
+    Estas operaciones requieren un contrato backend futuro. No se muestran negocios simulados ni se
+    modifica el contexto de la sesión.
+  </p>
+  <nav>
+    <a routerLink="/iam/users">Usuarios del negocio</a><a routerLink="/dashboard">Dashboard</a>
+  </nav>
+</section>

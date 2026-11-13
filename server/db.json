@@ -1,0 +1,241 @@
+{
+  "categories": [
+    {
+      "id": "1",
+      "name": "Bebidas",
+      "description": "Bebidas y refrescos"
+    },
+    {
+      "id": "2",
+      "name": "Abarrotes",
+      "description": "Productos básicos de consumo"
+    },
+    {
+      "id": "3",
+      "name": "Lácteos",
+      "description": "Leche y productos derivados"
+    },
+    {
+      "name": "Limpieza",
+      "description": "Limpieza del hogar",
+      "id": "MrekiirU_pk"
+    }
+  ],
+  "products": [
+    {
+      "id": "1",
+      "businessId": 1,
+      "categoryId": 1,
+      "name": "Coca Cola 500ml",
+      "description": "Bebida gaseosa personal",
+      "price": 3.5,
+      "minimumStock": 10,
+      "active": false
+    },
+    {
+      "id": "2",
+      "businessId": 1,
+      "categoryId": 2,
+      "name": "Arroz Costeño 1kg",
+      "description": "Arroz extra",
+      "price": 5.2,
+      "minimumStock": 15,
+      "active": false
+    },
+    {
+      "id": "3",
+      "businessId": 1,
+      "categoryId": 3,
+      "name": "Leche Gloria 400g",
+      "description": "Leche evaporada",
+      "price": 4.5,
+      "minimumStock": 8,
+      "active": true
+    },
+    {
+      "businessId": 1,
+      "categoryId": "2",
+      "name": "WillyWonka",
+      "description": "Chocolate Wonka",
+      "price": 7,
+      "minimumStock": 5,
+      "active": false,
+      "id": "6Dk3WPsGyy4"
+    },
+    {
+      "businessId": 1,
+      "categoryId": "MrekiirU_pk",
+      "name": "Papel Suave",
+      "description": "Papel Higienico Suave",
+      "price": 2,
+      "minimumStock": 10,
+      "active": true,
+      "id": "6bzz_yv"
+    }
+  ],
+  "batches": [
+    {
+      "id": "1",
+      "productId": "1",
+      "code": "LOT-001",
+      "availableQuantity": 28,
+      "entryDate": "2026-10-01",
+      "expirationDate": "2026-12-15"
+    },
+    {
+      "id": "2",
+      "productId": "1",
+      "code": "LOT-002",
+      "availableQuantity": 20,
+      "entryDate": "2026-10-10",
+      "expirationDate": "2027-01-20"
+    },
+    {
+      "id": "3",
+      "productId": "2",
+      "code": "LOT-003",
+      "availableQuantity": 50,
+      "entryDate": "2026-10-15",
+      "expirationDate": null
+    },
+    {
+      "productId": "6bzz_yv",
+      "code": "LT-004",
+      "availableQuantity": 20,
+      "entryDate": "2026-11-04",
+      "expirationDate": null,
+      "id": "quKwOqr"
+    }
+  ],
+  "inventory-movements": [
+    {
+      "batchId": "1",
+      "type": "OUT",
+      "quantity": 1,
+      "reason": "Ajuste por conteo 2: test",
+      "createdAt": "2026-11-04T06:32:45.090Z",
+      "id": 1
+    },
+    {
+      "batchId": "1",
+      "type": "OUT",
+      "quantity": 1,
+      "reason": "Merma (DAMAGED): testDaño",
+      "createdAt": "2026-11-04T06:59:31.145Z",
+      "id": 2
+    },
+    {
+      "batchId": "quKwOqr",
+      "type": "IN",
+      "quantity": 20,
+      "reason": "Reabastecimiento",
+      "createdAt": "2026-11-04T21:57:55.878Z",
+      "id": 3
+    }
+  ],
+  "physical-counts": [
+    {
+      "batchId": "2",
+      "systemQuantity": 20,
+      "countedQuantity": 18,
+      "difference": -2,
+      "observation": "Perdida de 2",
+      "countedAt": "2026-11-04T06:16:26.455Z",
+      "id": 1
+    },
+    {
+      "batchId": "1",
+      "systemQuantity": 30,
+      "countedQuantity": 29,
+      "difference": -1,
+      "observation": "test",
+      "countedAt": "2026-11-04T06:26:48.324Z",
+      "id": 2
+    }
+  ],
+  "stock-adjustments": [
+    {
+      "physicalCountId": "2",
+      "batchId": "1",
+      "previousQuantity": 30,
+      "newQuantity": 29,
+      "difference": -1,
+      "reason": "test",
+      "adjustedAt": "2026-11-04T06:32:45.122Z",
+      "id": 1
+    }
+  ],
+  "correction-requests": [
+    {
+      "physicalCountId": "1",
+      "reason": "test2",
+      "status": "PENDING",
+      "requestedAt": "2026-11-04T06:43:24.803Z",
+      "reviewedAt": null,
+      "reviewComment": null,
+      "id": 1
+    }
+  ],
+  "wastes": [
+    {
+      "batchId": "1",
+      "quantity": 1,
+      "reason": "DAMAGED",
+      "observation": "testDaño",
+      "registeredAt": "2026-11-04T06:59:31.181Z",
+      "id": 1
+    }
+  ],
+  "alerts": [
+    {
+      "productId": "3",
+      "batchId": null,
+      "type": "LOW_STOCK",
+      "severity": "WARNING",
+      "message": "Leche Gloria 400g: stock 0, mínimo 8.",
+      "createdAt": "2026-11-04T07:32:26.332Z",
+      "resolved": false,
+      "id": 1
+    }
+  ],
+  "audit-logs": [
+    {
+      "action": "INVENTORY_MOVEMENT",
+      "entityType": "Batch",
+      "entityId": "quKwOqr",
+      "description": "Ingreso de 20 unidades. Motivo: Reabastecimiento",
+      "performedAt": "2026-11-04T21:57:55.923Z",
+      "userId": null,
+      "id": 1
+    }
+  ],
+  "recommendations": [],
+  "offers": [],
+  "businesses": [
+    {
+      "name": "Don Pepe",
+      "address": "Av. La marina",
+      "phone": "985553321",
+      "active": true,
+      "id": 1
+    }
+  ],
+  "users": [{
+    "id": "1",
+    "businessId": "1",
+    "fullName": "Administrador",
+    "email": "admin@bodego.com",
+    "role": "ADMIN",
+    "active": true
+  },
+    {
+      "id": "2",
+      "businessId": "1",
+      "fullName": "Empleado",
+      "email": "empleado@bodego.com",
+      "role": "EMPLOYEE",
+      "active": true
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

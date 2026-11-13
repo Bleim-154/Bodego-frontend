@@ -1,0 +1,35 @@
+<section class="category-create-container">
+  <h1>Registrar Categoría</h1>
+
+  <p>Complete la información de la nueva categoría.</p>
+
+  @if (error()) {
+    <p class="error-message" role="alert">{{ error() }}</p>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-field">
+      <label for="name">Nombre</label>
+
+      <input id="name" type="text" formControlName="name" />
+
+      @if (form.controls.name.invalid && form.controls.name.touched) {
+        <small>Ingrese un nombre válido de máximo 100 caracteres.</small>
+      }
+    </div>
+
+    <div class="form-field">
+      <label for="description">Descripción</label>
+
+      <textarea id="description" formControlName="description" rows="4"></textarea>
+    </div>
+
+    <div class="form-actions">
+      <a routerLink="/categories"> Cancelar </a>
+
+      <button type="submit" [disabled]="form.invalid || saving()">
+        {{ saving() ? 'Guardando...' : 'Registrar Categoría' }}
+      </button>
+    </div>
+  </form>
+</section>

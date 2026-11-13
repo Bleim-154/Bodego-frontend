@@ -1,0 +1,128 @@
+<section class="container">
+  <h1>Usuarios del negocio {{ session.currentBusiness()?.id }}</h1>
+  <nav><a routerLink="/iam/businesses">Negocios</a><a routerLink="/dashboard">Dashboard</a></nav>
+  @if (session.isAdmin()) {
+    @if (error()) {
+      <p class="error" role="alert">{{ error() }}</p>
+    }
+    @if (message()) {
+      <p class="success" role="status">{{ message() }}</p>
+    }
+    <h2>Nuevo empleado</h2>
+    <button type="button" [disabled]="loading() || saving()" (click)="load()">
+      Actualizar directorio
+    </button>
+    <p>El rol es EMPLOYEE y el negocio es el de la sesión actual.</p>
+    <form (ngSubmit)="save()">
+      <label for="fullName">Nombre completo</label
+      ><input
+        id="fullName"
+        name="fullName"
+        [(ngModel)]="fullName"
+        maxlength="150"
+        autocomplete="name"
+        required
+      />
+      <label for="email">Correo electrónico</label
+      ><input
+        id="email"
+        name="email"
+        type="email"
+        [(ngModel)]="email"
+        maxlength="254"
+        autocomplete="off"
+        required
+      />
+      <label for="initialPassword">Contraseña inicial</label
+      ><input
+        id="initialPassword"
+        name="initialPassword"
+        type="password"
+        [(ngModel)]="password"
+        minlength="8"
+        maxlength="72"
+        autocomplete="new-password"
+        required
+      />
+      <p>Mínimo 8 caracteres, máximo 72 bytes UTF-8. La aplicación no la persiste.</p>
+      <button type="submit" [disabled]="saving() || loading()">Crear empleado</button>
+    </form>
+    <p>
+      La edición de perfil, asignación de ADMIN y traslado de negocio no están disponibles en la
+      API.
+    </p>
+    <h2>Directorio</h2>
+    @if (loading()) {
+      <p>Cargando usuarios...</p>
+    }
+    @if (currentPage(); as page) {
+      <p>Página {{ page.page + 1 }} · hasta {{ page.size }} usuarios por página</p>
+      <button
+        type="button"
+        [disabled]="page.page === 0 || saving() || loading()"
+        (click)="load(page.page - 1)"
+      >
+        Anterior
+      </button>
+      <button
+        type="button"
+        [disabled]="!page.hasNext || saving() || loading()"
+        (click)="load(page.page + 1)"
+      >
+        Siguiente
+      </button>
+      @if (page.items.length === 0) {
+        <p>No hay usuarios en esta página.</p>
+      }
+      <div class="table-container" role="region" aria-label="Directorio de usuarios" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Correo</th>
+              <th>Negocio</th>
+              <th>Rol</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (user of page.items; track user.id) {
+              <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.fullName }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.businessId }}</td>
+                <td>{{ user.role }}</td>
+                <td>{{ user.active ? 'Activo' : 'Inactivo' }}</td>
+                <td>
+                  <button type="button" [disabled]="saving()" (click)="show(user.id)">
+                    Ver detalle
+                  </button>
+                  @if (user.role === 'EMPLOYEE') {
+                    <button type="button" [disabled]="saving()" (click)="toggleStatus(user)">
+                      {{ user.active ? 'Desactivar' : 'Activar' }}
+                    </button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+    @if (selected(); as user) {
+      <section aria-label="Detalle del usuario">
+        <h2>Usuario {{ user.id }}</h2>
+        <p>{{ user.fullName }} · {{ user.email }}</p>
+        <p>
+          Negocio {{ user.businessId }} · {{ user.role }} ·
+          {{ user.active ? 'Activo' : 'Inactivo' }}
+        </p>
+      </section>
+    }
+  } @else {
+    <p>No tiene acceso a la gestión de usuarios con esta sesión.</p>
+  }
+</section>

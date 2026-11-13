@@ -1,0 +1,16 @@
+node_modules
+dist
+.angular
+tmp
+.git
+.idea
+.env*
+.npmrc
+.yarnrc*
+.codex
+.agents
+*.pem
+*.key
+*.log
+docs
+server

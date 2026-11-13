@@ -1,0 +1,71 @@
+<section class="batch-list-container">
+  <header class="page-header">
+    <div>
+      <h1>Gestión de Lotes</h1>
+      <p>Consulte los lotes registrados en el inventario.</p>
+    </div>
+
+    <a routerLink="/products"> Volver al catálogo </a>
+    <a routerLink="/inventory/movements/new"> Registrar movimiento </a>
+    @if (session.isAdmin()) {
+      <a routerLink="/batches/new">Registrar lote</a>
+    }
+
+    <a routerLink="/inventory/movements"> Historial de movimientos </a>
+    <a routerLink="/stock-control/counts"> Conteos físicos </a>
+    <a routerLink="/stock-control/wastes"> Gestión de mermas </a>
+    <a routerLink="/monitoring/alerts"> Alertas de inventario </a>
+  </header>
+
+  @if (loading()) {
+    <p>Cargando lotes...</p>
+  }
+
+  @if (error()) {
+    <p class="error-message" role="alert">{{ error() }}</p>
+  }
+
+  @if (!loading() && !error()) {
+    @if (batches().length === 0) {
+      <p>No existen lotes registrados.</p>
+    } @else {
+      <div class="table-container" role="region" aria-label="Tabla de registros" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Código</th>
+              <th scope="col">Producto</th>
+              <th scope="col">Cantidad disponible</th>
+              <th scope="col">Fecha de ingreso</th>
+              <th scope="col">Vencimiento</th>
+              <th scope="col">Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (batch of batches(); track batch.id) {
+              <tr>
+                <td>{{ batch.code }}</td>
+
+                <td>{{ getProductName(batch.productId) }}</td>
+
+                <td>{{ batch.availableQuantity }}</td>
+
+                <td>{{ batch.entryDate ? formatDate(batch.entryDate) : 'No disponible' }}</td>
+
+                <td>{{ formatDate(batch.expirationDate) }}</td>
+                <td>
+                  @if (session.isAdmin()) {
+                    <a [routerLink]="['/batches/edit', batch.id]">Editar lote</a>
+                  } @else {
+                    Solo lectura
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  }
+</section>

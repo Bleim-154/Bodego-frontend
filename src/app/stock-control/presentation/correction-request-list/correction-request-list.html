@@ -1,0 +1,110 @@
+<section class="container">
+  <h1>Solicitudes de corrección</h1>
+
+  @if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  }
+
+  @if (message()) {
+    <p class="success" role="status">{{ message() }}</p>
+  }
+
+  <h2>Nueva solicitud</h2>
+
+  <form (ngSubmit)="submitRequest()">
+    <label for="correction-request-list-physicalCountId">Conteo físico</label>
+
+    <select
+      id="correction-request-list-physicalCountId"
+      name="physicalCountId"
+      [(ngModel)]="selectedCountId"
+      required
+    >
+      <option value="">Seleccione un conteo</option>
+
+      @for (count of counts(); track count.id) {
+        @if (count.difference !== 0) {
+          <option [value]="count.id">
+            Lote {{ count.batchId }} | Diferencia: {{ count.difference }}
+          </option>
+        }
+      }
+    </select>
+
+    <label for="correction-request-list-reason">Motivo</label>
+
+    <textarea
+      id="correction-request-list-reason"
+      name="reason"
+      [(ngModel)]="reason"
+      maxlength="500"
+      required
+    ></textarea>
+
+    <button type="submit" [disabled]="saving()">Enviar solicitud</button>
+  </form>
+
+  <h2>Solicitudes registradas</h2>
+
+  @if (session.isAdmin()) {
+    <label for="correction-request-list-reviewComment">Comentario de revisión</label>
+
+    <textarea
+      id="correction-request-list-reviewComment"
+      name="reviewComment"
+      [(ngModel)]="reviewComment"
+      maxlength="500"
+    ></textarea>
+  }
+
+  @if (loading()) {
+    <p>Cargando...</p>
+  } @else {
+    <div class="table-container" role="region" aria-label="Tabla de registros" tabindex="0">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Conteo</th>
+            <th scope="col">Motivo</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Fecha</th>
+            <th scope="col">Comentario</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (request of requests(); track request.id) {
+            <tr>
+              <td>{{ request.physicalCountId }}</td>
+              <td>{{ request.reason }}</td>
+              <td>
+                <span
+                  class="status-badge"
+                  [class.positive]="request.status === 'APPROVED'"
+                  [class.warning]="request.status === 'PENDING'"
+                  [class.danger]="request.status === 'REJECTED'"
+                  >{{ request.status }}</span
+                >
+              </td>
+              <td>{{ request.requestedAt }}</td>
+              <td>{{ request.reviewComment || '-' }}</td>
+
+              <td>
+                @if (request.status === 'PENDING' && session.isAdmin()) {
+                  <button type="button" [disabled]="saving()" (click)="review(request.id, true)">
+                    Aprobar
+                  </button>
+
+                  <button type="button" [disabled]="saving()" (click)="review(request.id, false)">
+                    Rechazar
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

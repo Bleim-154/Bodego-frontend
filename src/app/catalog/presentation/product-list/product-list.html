@@ -1,0 +1,80 @@
+<section class="product-container">
+  <h1>Catálogo de Productos</h1>
+  <p>
+    Negocio activo:
+    <strong>{{ businessContext.businessName() }}</strong>
+  </p>
+  <div class="product-actions">
+    @if (session.isAdmin()) {
+      <a routerLink="/products/new"> Registrar nuevo producto </a>
+    }
+
+    <a routerLink="/categories"> Gestionar categorías </a>
+
+    <a routerLink="/batches"> Gestionar lotes </a>
+  </div>
+
+  <p>Productos registrados en BodeGo</p>
+
+  @if (loading()) {
+    <p>Cargando productos...</p>
+  }
+
+  @if (error()) {
+    <p>{{ error() }}</p>
+  }
+
+  @if (!loading() && !error()) {
+    @if (products().length > 0) {
+      <div class="table-container" role="region" aria-label="Listado" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Producto</th>
+              <th scope="col">Precio</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (product of products(); track product.id) {
+              <tr>
+                <td>{{ product.id }}</td>
+                <td>{{ product.name }}</td>
+                <td>S/ {{ product.price }}</td>
+                <td>
+                  <span class="status-badge" [class.positive]="product.active">{{
+                    product.active ? 'Activo' : 'Inactivo'
+                  }}</span>
+                </td>
+                <td>
+                  @if (session.isAdmin()) {
+                    <a [routerLink]="['/products/edit', product.id]"> Editar </a>
+
+                    <button
+                      type="button"
+                      (click)="toggleProductStatus(product)"
+                      [disabled]="updatingProductId() !== null"
+                    >
+                      @if (updatingProductId() === product.id) {
+                        Actualizando...
+                      } @else {
+                        {{ product.active ? 'Desactivar' : 'Activar' }}
+                      }
+                    </button>
+                  } @else {
+                    Solo lectura
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <p>No hay productos registrados.</p>
+    }
+  }
+</section>

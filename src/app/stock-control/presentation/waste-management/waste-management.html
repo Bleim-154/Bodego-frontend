@@ -1,0 +1,92 @@
+<section class="container">
+  <h1>Gestión de mermas</h1>
+
+  <a routerLink="/batches">Volver a lotes</a>
+
+  @if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  }
+
+  @if (message()) {
+    <p class="success" role="status">{{ message() }}</p>
+  }
+
+  <h2>Registrar merma</h2>
+
+  <form (ngSubmit)="submit()">
+    <label for="waste-management-batchId">Lote</label>
+    <select id="waste-management-batchId" name="batchId" [(ngModel)]="batchId" required>
+      <option value="">Seleccione un lote</option>
+
+      @for (batch of batches(); track batch.id) {
+        <option [value]="batch.id">{{ batch.code }} - Stock: {{ batch.availableQuantity }}</option>
+      }
+    </select>
+
+    <label for="waste-management-quantity">Cantidad</label>
+    <input
+      id="waste-management-quantity"
+      type="number"
+      name="quantity"
+      [(ngModel)]="quantity"
+      min="1"
+      max="2147483647"
+      step="1"
+      required
+    />
+
+    <label for="waste-management-reason">Motivo</label>
+    <select id="waste-management-reason" name="reason" [(ngModel)]="reason">
+      <option value="EXPIRED">Vencimiento</option>
+      <option value="DAMAGED">Daño</option>
+      <option value="DETERIORATED">Deterioro</option>
+      <option value="OTHER">Otro</option>
+    </select>
+
+    <label for="waste-management-observation">Observación</label>
+    <textarea
+      id="waste-management-observation"
+      name="observation"
+      [(ngModel)]="observation"
+      maxlength="500"
+    ></textarea>
+
+    <button type="submit" [disabled]="saving()">
+      {{ saving() ? 'Registrando...' : 'Registrar merma' }}
+    </button>
+  </form>
+
+  <h2>Historial de mermas</h2>
+
+  @if (loading()) {
+    <p>Cargando...</p>
+  } @else if (wastes().length === 0) {
+    <p>No hay mermas registradas.</p>
+  } @else {
+    <div class="table-container" role="region" aria-label="Tabla de registros" tabindex="0">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Fecha</th>
+            <th scope="col">Lote</th>
+            <th scope="col">Cantidad</th>
+            <th scope="col">Motivo</th>
+            <th scope="col">Observación</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (waste of wastes(); track waste.id) {
+            <tr>
+              <td>{{ waste.registeredAt }}</td>
+              <td>{{ getBatchCode(waste.batchId) }}</td>
+              <td>{{ waste.quantity }}</td>
+              <td>{{ waste.reason }}</td>
+              <td>{{ waste.observation || '-' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

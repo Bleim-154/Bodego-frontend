@@ -1,0 +1,48 @@
+<section class="container">
+  <h1>Ajustes de stock</h1>
+
+  <nav>
+    <a routerLink="/stock-control/counts">Conteos físicos</a>
+    @if (session.isAdmin()) {
+      <a routerLink="/stock-control/adjustments/new">Nuevo ajuste</a>
+    }
+  </nav>
+
+  @if (loading()) {
+    <p>Cargando ajustes...</p>
+  } @else if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  } @else if (adjustments().length === 0) {
+    <p>No hay ajustes registrados.</p>
+  } @else {
+    <div class="table-container" role="region" aria-label="Tabla de registros" tabindex="0">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Fecha</th>
+            <th scope="col">Lote</th>
+            <th scope="col">Conteo</th>
+            <th scope="col">Stock anterior</th>
+            <th scope="col">Stock nuevo</th>
+            <th scope="col">Diferencia</th>
+            <th scope="col">Motivo</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (adjustment of adjustments(); track adjustment.id) {
+            <tr>
+              <td>{{ adjustment.adjustedAt }}</td>
+              <td>{{ adjustment.batchId }}</td>
+              <td>{{ adjustment.physicalCountId }}</td>
+              <td>{{ adjustment.previousQuantity }}</td>
+              <td>{{ adjustment.newQuantity }}</td>
+              <td>{{ adjustment.difference }}</td>
+              <td>{{ adjustment.reason }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

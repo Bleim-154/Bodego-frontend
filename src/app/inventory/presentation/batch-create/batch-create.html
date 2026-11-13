@@ -1,0 +1,35 @@
+<section class="container">
+  <h1>Registrar lote</h1>
+  <p>El lote comienza sin stock. Registre un movimiento de ingreso para añadir existencias.</p>
+
+  @if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <label for="batch-create-productId">Producto</label>
+    <select id="batch-create-productId" formControlName="productId">
+      <option value="">Seleccione un producto</option>
+
+      @for (product of products(); track product.id) {
+        <option [value]="product.id">
+          {{ product.name }}
+        </option>
+      }
+    </select>
+
+    <label for="batch-create-code">Código del lote</label>
+    <input id="batch-create-code" type="text" formControlName="code" maxlength="100" />
+
+    <label for="batch-create-expirationDate">Fecha de vencimiento (opcional)</label>
+    <input id="batch-create-expirationDate" type="date" formControlName="expirationDate" />
+
+    <div class="actions">
+      <a routerLink="/batches">Cancelar</a>
+
+      <button type="submit" [disabled]="form.invalid || saving()">
+        {{ saving() ? 'Guardando...' : 'Registrar lote' }}
+      </button>
+    </div>
+  </form>
+</section>

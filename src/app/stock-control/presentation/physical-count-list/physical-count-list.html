@@ -1,0 +1,48 @@
+<section class="container">
+  <h1>Conteos físicos</h1>
+
+  <nav>
+    <a routerLink="/batches">Volver a lotes</a>
+    <a routerLink="/stock-control/counts/new">Nuevo conteo</a>
+    @if (session.isAdmin()) {
+      <a routerLink="/stock-control/adjustments"> Ajustes de stock </a>
+    }
+    <a routerLink="/stock-control/correction-requests"> Solicitudes de corrección </a>
+  </nav>
+
+  @if (loading()) {
+    <p>Cargando conteos...</p>
+  } @else if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  } @else if (counts().length === 0) {
+    <p>No hay conteos registrados.</p>
+  } @else {
+    <div class="table-container" role="region" aria-label="Tabla de registros" tabindex="0">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Fecha</th>
+            <th scope="col">Lote</th>
+            <th scope="col">Stock sistema</th>
+            <th scope="col">Conteo físico</th>
+            <th scope="col">Diferencia</th>
+            <th scope="col">Observación</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (count of counts(); track count.id) {
+            <tr>
+              <td>{{ count.countedAt }}</td>
+              <td>{{ count.batchId }}</td>
+              <td>{{ count.systemQuantity }}</td>
+              <td>{{ count.countedQuantity }}</td>
+              <td>{{ count.difference }}</td>
+              <td>{{ count.observation || 'Sin observación' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

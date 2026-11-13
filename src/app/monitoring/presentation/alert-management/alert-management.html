@@ -1,0 +1,77 @@
+<section class="container">
+  <h1>Alertas de inventario</h1>
+
+  <nav>
+    <a routerLink="/batches">Volver a lotes</a>
+    <a routerLink="/monitoring/audit"> Registro de auditoría </a>
+    <a routerLink="/strategic-offers/recommendations"> Recomendaciones </a>
+
+    <button type="button" [disabled]="saving()" (click)="generate()">Generar alertas</button>
+
+    <label>
+      <input
+        type="checkbox"
+        [checked]="showResolved()"
+        (change)="showResolved.set(!showResolved())"
+      />
+      Mostrar atendidas
+    </label>
+  </nav>
+
+  @if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  }
+
+  @if (message()) {
+    <p class="success" role="status">{{ message() }}</p>
+  }
+
+  @if (loading()) {
+    <p>Cargando alertas...</p>
+  } @else if (visibleAlerts().length === 0) {
+    <p>No hay alertas para mostrar.</p>
+  } @else {
+    <div class="table-container" role="region" aria-label="Tabla de registros" tabindex="0">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Fecha</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">Severidad</th>
+            <th scope="col">Mensaje</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Atendida el</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (alert of visibleAlerts(); track alert.id) {
+            <tr>
+              <td>{{ alert.createdAt }}</td>
+              <td>{{ alert.type }}</td>
+              <td>{{ alert.severity }}</td>
+              <td>{{ alert.message }}</td>
+              <td>
+                <span
+                  class="status-badge"
+                  [class.positive]="alert.resolved"
+                  [class.warning]="!alert.resolved"
+                  >{{ alert.resolved ? 'Atendida' : 'Pendiente' }}</span
+                >
+              </td>
+              <td>{{ alert.resolvedAt || '-' }}</td>
+              <td>
+                @if (!alert.resolved) {
+                  <button type="button" [disabled]="saving()" (click)="resolve(alert.id)">
+                    Marcar atendida
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

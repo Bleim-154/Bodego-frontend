@@ -1,0 +1,116 @@
+﻿<ng-container>
+  <a class="skip-link" href="#main-content">Saltar al contenido</a>
+  <mat-sidenav-container class="app-shell">
+    <mat-sidenav
+      id="primary-navigation"
+      class="sidebar"
+      [mode]="mobile() ? 'over' : 'side'"
+      [opened]="session.isLoggedIn() && (!mobile() || menuOpen())"
+      (closedStart)="menuOpen.set(false)"
+      role="navigation"
+      aria-label="Navegación principal"
+    >
+      @if (session.isLoggedIn()) {
+        <div class="sidebar-layout">
+          <div class="sidebar-heading">
+            <a class="brand" routerLink="/dashboard" aria-label="BodeGo, panel de control">
+              <span class="brand-mark"
+                ><mat-icon fontSet="material-symbols-outlined">storefront</mat-icon></span
+              >
+              <span
+                >Bode<span class="brand-accent">Go</span><small>GESTIÓN DE INVENTARIO</small></span
+              >
+            </a>
+            @if (mobile()) {
+              <button
+                mat-icon-button
+                type="button"
+                aria-label="Cerrar menú"
+                (click)="menuOpen.set(false)"
+              >
+                <mat-icon fontSet="material-symbols-outlined">close</mat-icon>
+              </button>
+            }
+          </div>
+          <div class="business-card">
+            <mat-icon fontSet="material-symbols-outlined">domain</mat-icon>
+            <div>
+              <small>Negocio activo</small><strong>{{ session.currentBusiness()?.name }}</strong>
+            </div>
+            <span class="business-indicator" aria-hidden="true"></span>
+          </div>
+          <div class="navigation-groups">
+            @for (group of navigation; track group.label) {
+              @if (!group.admin || session.isAdmin()) {
+                <section class="navigation-group" [attr.aria-label]="group.label">
+                  <p class="group-label">{{ group.label }}</p>
+                  @for (link of group.links; track link.path) {
+                    @if (link.path !== '/stock-control/adjustments' || session.isAdmin()) {
+                      <a
+                        [routerLink]="link.path"
+                        routerLinkActive="active"
+                        ariaCurrentWhenActive="page"
+                        (click)="menuOpen.set(false)"
+                      >
+                        <mat-icon fontSet="material-symbols-outlined">{{ link.icon }}</mat-icon>
+                        {{ link.label }}
+                      </a>
+                    }
+                  }
+                </section>
+              }
+            }
+          </div>
+          <div class="sidebar-footer">
+            <div class="user-identity">
+              <span class="avatar" aria-hidden="true">{{
+                session.currentUser()?.fullName?.slice(0, 1)
+              }}</span>
+              <div>
+                <strong>{{ session.currentUser()?.fullName }}</strong
+                ><small>{{ session.isAdmin() ? 'Administrador' : 'Empleado' }}</small>
+              </div>
+            </div>
+            <button mat-button type="button" class="logout" (click)="logout()">
+              <mat-icon fontSet="material-symbols-outlined">logout</mat-icon>Cerrar sesión
+            </button>
+          </div>
+        </div>
+      }
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <header class="topbar">
+        @if (session.isLoggedIn()) {
+          @if (mobile()) {
+            <button
+              mat-icon-button
+              type="button"
+              aria-label="Abrir menú de navegación"
+              aria-controls="primary-navigation"
+              [attr.aria-expanded]="menuOpen()"
+              (click)="menuOpen.set(true)"
+            >
+              <mat-icon fontSet="material-symbols-outlined">menu</mat-icon>
+            </button>
+          }
+          <div class="topbar-business">
+            <small>ESPACIO DE TRABAJO</small><strong>{{ session.currentBusiness()?.name }}</strong>
+          </div>
+          <span class="role-badge">{{ session.isAdmin() ? 'Administrador' : 'Empleado' }}</span>
+        } @else {
+          <span class="public-brand">Bode<span>Go</span></span>
+          <span class="topbar-caption">Tu negocio, en orden.</span>
+        }
+      </header>
+      <main
+        #content
+        id="main-content"
+        class="workspace"
+        tabindex="-1"
+        [class.public-workspace]="!session.isLoggedIn()"
+      >
+        <ng-content />
+      </main>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</ng-container>

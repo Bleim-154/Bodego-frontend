@@ -1,0 +1,44 @@
+<section class="container">
+  <h1>Registrar movimiento</h1>
+
+  @if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <label for="movement-create-batchId">Lote</label>
+    <select id="movement-create-batchId" formControlName="batchId">
+      <option value="">Seleccione un lote</option>
+
+      @for (batch of batches(); track batch.id) {
+        <option [value]="batch.id">{{ batch.code }} - Stock: {{ batch.availableQuantity }}</option>
+      }
+    </select>
+
+    <label for="movement-create-type">Tipo de movimiento</label>
+    <select id="movement-create-type" formControlName="type">
+      <option value="IN">Ingreso</option>
+      <option value="OUT">Salida</option>
+    </select>
+
+    <label for="movement-create-quantity">Cantidad</label>
+    <input
+      id="movement-create-quantity"
+      type="number"
+      min="1"
+      step="1"
+      formControlName="quantity"
+    />
+
+    <label for="movement-create-reason">Motivo</label>
+    <textarea id="movement-create-reason" formControlName="reason"></textarea>
+
+    <div class="actions">
+      <a routerLink="/batches">Cancelar</a>
+
+      <button type="submit" [disabled]="form.invalid || saving()">
+        {{ saving() ? 'Guardando...' : 'Registrar movimiento' }}
+      </button>
+    </div>
+  </form>
+</section>

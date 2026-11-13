@@ -1,0 +1,41 @@
+<section class="category-edit-container">
+  <h1>Editar Categoría</h1>
+
+  <p>Modifique la información de la categoría seleccionada.</p>
+
+  @if (loading()) {
+    <p>Cargando información de la categoría...</p>
+  }
+
+  @if (error()) {
+    <p class="error-message" role="alert">{{ error() }}</p>
+  }
+
+  @if (loaded() && !loading()) {
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-field">
+        <label for="name">Nombre</label>
+
+        <input id="name" type="text" formControlName="name" />
+
+        @if (form.controls.name.invalid && form.controls.name.touched) {
+          <small>Ingrese un nombre válido de máximo 100 caracteres.</small>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="description">Descripción</label>
+
+        <textarea id="description" formControlName="description" rows="4"></textarea>
+      </div>
+
+      <div class="form-actions">
+        <a routerLink="/categories"> Cancelar </a>
+
+        <button type="submit" [disabled]="form.invalid || saving()">
+          {{ saving() ? 'Guardando...' : 'Guardar Cambios' }}
+        </button>
+      </div>
+    </form>
+  }
+</section>

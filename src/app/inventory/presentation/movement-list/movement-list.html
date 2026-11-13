@@ -1,0 +1,42 @@
+<section class="container">
+  <h1>Historial de movimientos</h1>
+
+  <nav>
+    <a routerLink="/batches">Volver a lotes</a>
+    <a routerLink="/inventory/movements/new">Nuevo movimiento</a>
+  </nav>
+
+  @if (loading()) {
+    <p>Cargando movimientos...</p>
+  } @else if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  } @else if (movements().length === 0) {
+    <p>No hay movimientos registrados.</p>
+  } @else {
+    <div class="table-container" role="region" aria-label="Tabla de registros" tabindex="0">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Fecha</th>
+            <th scope="col">Lote</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">Cantidad</th>
+            <th scope="col">Motivo</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (movement of movements(); track movement.id) {
+            <tr>
+              <td>{{ movement.createdAt }}</td>
+              <td>{{ movement.batchId }}</td>
+              <td>{{ movement.type === 'IN' ? 'Ingreso' : 'Salida' }}</td>
+              <td>{{ movement.quantity }}</td>
+              <td>{{ movement.reason }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

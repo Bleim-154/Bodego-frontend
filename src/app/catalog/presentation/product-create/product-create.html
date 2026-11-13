@@ -1,0 +1,75 @@
+<section class="product-create-container">
+  <h1>Registrar Producto</h1>
+
+  <p>Complete la información del nuevo producto.</p>
+
+  @if (error()) {
+    <p class="error-message" role="alert">{{ error() }}</p>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-field">
+      <label for="name">Nombre</label>
+
+      <input id="name" type="text" formControlName="name" />
+
+      @if (form.controls.name.invalid && form.controls.name.touched) {
+        <small>Ingrese un nombre válido.</small>
+      }
+    </div>
+
+    <div class="form-field">
+      <label for="description">Descripción</label>
+
+      <textarea id="description" formControlName="description"></textarea>
+    </div>
+
+    <div class="form-field">
+      <label for="categoryId">Categoría</label>
+
+      <select id="categoryId" formControlName="categoryId" [disabled]="loadingCategories()">
+        <option [ngValue]="''">Seleccione una categoría</option>
+
+        @for (category of categories(); track category.id) {
+          <option [ngValue]="category.id">
+            {{ category.name }}
+          </option>
+        }
+      </select>
+
+      @if (form.controls.categoryId.invalid && form.controls.categoryId.touched) {
+        <small>Seleccione una categoría.</small>
+      }
+    </div>
+
+    <div class="form-field">
+      <label for="price">Precio (S/)</label>
+
+      <input id="price" type="number" min="0.01" step="0.01" formControlName="price" />
+
+      @if (form.controls.price.invalid && form.controls.price.touched) {
+        <small>Ingrese un precio mayor que cero.</small>
+      }
+    </div>
+
+    <div class="form-field">
+      <label for="minimumStock">Stock mínimo</label>
+
+      <input id="minimumStock" type="number" min="0" step="1" formControlName="minimumStock" />
+
+      @if (form.controls.minimumStock.invalid && form.controls.minimumStock.touched) {
+        <small>Ingrese un número entero mayor o igual a cero.</small>
+      }
+    </div>
+
+    <p>El producto se registrará activo. Puede desactivarlo después desde el listado.</p>
+
+    <div class="form-actions">
+      <a routerLink="/products"> Cancelar </a>
+
+      <button type="submit" [disabled]="form.invalid || saving() || loadingCategories()">
+        {{ saving() ? 'Guardando...' : 'Registrar Producto' }}
+      </button>
+    </div>
+  </form>
+</section>
